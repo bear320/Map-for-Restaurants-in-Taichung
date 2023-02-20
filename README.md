@@ -2,7 +2,7 @@
 
 ## Description
 * 使用 vue-cli 開發 (Vue 3)
-* Tag: ```Hosting (Firebase)```
+* Tags: ```Hosting (Firebase)```
 * [網站連結](https://taichung-food-map.web.app/)
 
 ## Project setup
