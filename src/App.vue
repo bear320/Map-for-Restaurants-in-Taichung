@@ -23,6 +23,7 @@
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 import { Control } from "mapbox-gl";
+import geoData from "@/assets/data/cities.json";
 
 export default {
     data() {
@@ -47,6 +48,7 @@ export default {
             map.flyTo({
                 center: [lng, lat],
                 zoom: 18,
+                speed: 1,
             });
 
             const elememts = document.getElementsByClassName("focus");
@@ -65,6 +67,7 @@ export default {
             map.flyTo({
                 center: [lng, lat],
                 zoom: 18,
+                speed: 1,
             });
 
             const elememts = document.getElementsByClassName("focus");
@@ -90,7 +93,7 @@ export default {
             container: "map", // container ID
             style: "mapbox://styles/mapbox/streets-v12", // style URL
             center: [120, 24], // starting position [lng, lat]
-            zoom: 12, // starting zoom
+            zoom: 8, // starting zoom
             attributionControl: false,
             pitch: 45,
         })
@@ -125,6 +128,7 @@ export default {
             .flyTo({
                 center: [120.640321, 24.167208],
                 zoom: 15,
+                speed: 0.35,
             });
 
         // Marker
@@ -174,6 +178,38 @@ export default {
                 }
             }
         };
+
+        map.on("load", () => {
+            map.addSource("cities", {
+                type: "geojson",
+                data: geoData,
+            });
+
+            map.addLayer({
+                id: "citiesLayer",
+                type: "line",
+                source: "cities",
+                layout: {
+                    "line-join": "round",
+                    "line-cap": "round",
+                },
+                paint: {
+                    "line-color": "#888",
+                    "line-width": 2,
+                },
+            });
+
+            map.addLayer({
+                id: "Taichung City",
+                type: "fill",
+                source: "cities",
+                paint: {
+                    "fill-color": "Chocolate",
+                    "fill-opacity": 0.25,
+                },
+                filter: ["==", "COUNTYNAME", "臺中市"],
+            });
+        });
     },
     beforeDestroy() {
         document.querySelector(".restaurant-info").onscroll = null;
