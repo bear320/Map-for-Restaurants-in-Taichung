@@ -246,6 +246,7 @@ export default {
         });
     },
     beforeDestroy() {
+        // 移除事件偵聽
         document.querySelector(".restaurant-info").onscroll = null;
     },
 };
