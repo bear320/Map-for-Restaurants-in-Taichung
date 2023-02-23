@@ -25,6 +25,8 @@ import mapboxgl from "mapbox-gl";
 import { Control } from "mapbox-gl";
 import geoData from "@/assets/data/cities.json";
 
+const MAPBOXTOKEN = process.env.VUE_APP_MAPBOXTOKEN;
+
 export default {
     data() {
         return {
@@ -100,8 +102,7 @@ export default {
         this.activeID = data[0].RestaurantID;
 
         // 初始化地圖
-        mapboxgl.accessToken =
-            "pk.eyJ1IjoiYmVhcjMyMCIsImEiOiJjbGVibzYwZWUwMDN1M3FudGFvNzJ3cW9vIn0.5wN7g9_4AQTz8QQCgVWIfg";
+        mapboxgl.accessToken = MAPBOXTOKEN;
         const map = new mapboxgl.Map({
             // 地圖 container 之 id
             container: "map",
