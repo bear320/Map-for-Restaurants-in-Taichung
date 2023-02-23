@@ -35,34 +35,45 @@ export default {
     },
     methods: {
         isCardShow(id) {
+            // 根據 id 取得對應元素
             const card = document.getElementById(id);
+            // 取得該卡片元素的高度
             const cardHeight = document.getElementById(id).offsetHeight;
+            // 使用 getBoundingClientRect() 取得卡片元素相對 viewport 的位置訊息
             const domRect = card.getBoundingClientRect();
 
-            // 檢查該卡片是否在 viewport 內
+            // 檢查該 id 之卡片是否在 viewport 內
+            // 條件一： top 小於 viewport 高度（卡片頂部在 viewport 範圍內）
+            // 條件二： bottom 大於卡片高度的一半（卡片底部在 viewport 範圍內）
+            // 若兩條件皆滿足，則會 return true，反之則 return false
             return domRect.top < window.innerHeight && domRect.bottom > cardHeight * 0.5;
         },
         updateActive(restID, map, lng, lat) {
+            // 檢查餐廳 id 是否與 activeID 一樣，如若一致則 return
             if (restID === this.activeID) return;
 
+            // 使用 flyto() 移動至餐廳位置
             map.flyTo({
                 center: [lng, lat],
                 zoom: 18,
                 speed: 1,
             });
 
+            // 找到所有帶有 focus 之 class 之元素
             const elememts = document.getElementsByClassName("focus");
 
+            // 將所有元素轉為陣列，並使用 forEach() 遍歷該陣列中之元素，並移除 focus 之 class
             Array.from(elememts).forEach((element) => {
                 element.classList.remove("focus");
             });
+            // 找到 id 為該餐廳 id 之卡片，並新增 focus 之 class
             document.getElementById(restID).classList.add("focus");
 
+            // 將該餐廳 id 賦值給 activeID
             this.activeID = restID;
         },
         clickCard(ID, map, lng, lat) {
             if (ID === this.activeID) return;
-            console.log(map);
 
             map.flyTo({
                 center: [lng, lat],
@@ -83,23 +94,32 @@ export default {
         const data = await fetch(
             "https://tdx.transportdata.tw/api/basic/v2/Tourism/Restaurant/Taichung?%24format=JSON"
         ).then((res) => res.json());
+        // 將回傳之 JSON 資料儲存至 this.info 陣列中
         this.info = data;
+        // 將 data 中第一筆資料的 id 設為 activeID
         this.activeID = data[0].RestaurantID;
 
         // 初始化地圖
         mapboxgl.accessToken =
             "pk.eyJ1IjoiYmVhcjMyMCIsImEiOiJjbGVibzYwZWUwMDN1M3FudGFvNzJ3cW9vIn0.5wN7g9_4AQTz8QQCgVWIfg";
         const map = new mapboxgl.Map({
-            container: "map", // container ID
-            style: "mapbox://styles/mapbox/streets-v12", // style URL
-            center: [120, 24], // starting position [lng, lat]
-            zoom: 8, // starting zoom
+            // 地圖 container 之 id
+            container: "map",
+            // 地圖樣式
+            style: "mapbox://styles/mapbox/streets-v12",
+            // 初始位置
+            center: [120, 24],
+            // 初始縮放 level
+            zoom: 8,
+            // 關閉預設地圖歸屬
             attributionControl: false,
+            // 傾斜角度
             pitch: 45,
         })
             // 地圖歸屬訊息
             .addControl(
                 new mapboxgl.AttributionControl({
+                    // 自訂地圖歸屬訊息
                     customAttribution: "Map designd by Oliver Xiong",
                 })
             )
@@ -159,6 +179,7 @@ export default {
 
         this.map = map;
 
+        // 事件偵聽：當 .restaurant-info 滾動時
         document.querySelector(".restaurant-info").onscroll = () => {
             for (let i = 0; i < data.length; i++) {
                 const correspond = data[i];
@@ -179,20 +200,28 @@ export default {
             }
         };
 
+        // 事件偵聽：當 map load 時
         map.on("load", () => {
+            // 新增 source
             map.addSource("cities", {
                 type: "geojson",
                 data: geoData,
             });
 
+            // 新增 layer
             map.addLayer({
+                // unique id
                 id: "citiesLayer",
+                // 圖層類型： line
                 type: "line",
+                // 資料來源名稱
                 source: "cities",
+                // 如何繪製和應用數據（渲染過程前期）
                 layout: {
                     "line-join": "round",
                     "line-cap": "round",
                 },
+                // 該圖層數據樣式（渲染過程後期）
                 paint: {
                     "line-color": "#888",
                     "line-width": 2,
@@ -200,13 +229,18 @@ export default {
             });
 
             map.addLayer({
+                // unique id
                 id: "Taichung City",
+                // 圖層類型： fill
                 type: "fill",
+                // 資料來源名稱
                 source: "cities",
+                // 該圖層數據樣式（渲染過程後期）
                 paint: {
                     "fill-color": "Chocolate",
                     "fill-opacity": 0.25,
                 },
+                // 對 source 進行篩選
                 filter: ["==", "COUNTYNAME", "臺中市"],
             });
         });
