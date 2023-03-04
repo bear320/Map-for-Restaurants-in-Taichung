@@ -23,7 +23,6 @@
 <script>
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
-// import { Control } from "mapbox-gl";
 import geoData from "@/assets/data/cities.json";
 
 const MAPBOXTOKEN = process.env.VUE_APP_MAPBOXTOKEN;
