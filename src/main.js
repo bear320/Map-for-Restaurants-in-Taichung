@@ -15,12 +15,12 @@ router.beforeEach((to, from, next) => {
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDqTJW06G3Slq5zYoyJ_Ejc_919BcG4Aqk",
+    apiKey: process.env.VUE_FIREBASE_apiKey,
     authDomain: "taichung-food-map.firebaseapp.com",
     projectId: "taichung-food-map",
     storageBucket: "taichung-food-map.appspot.com",
-    messagingSenderId: "896941382762",
-    appId: "1:896941382762:web:b4f55812a6001369133e13",
+    messagingSenderId: process.env.VUE_FIREBASE_messagingSenderId,
+    appId: process.env.VUE_FIREBASE_appId,
 };
 
-const app = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
